@@ -14,11 +14,11 @@ class Watch:
 
         self.event_handler = Handler()
 
-        self.base_folder = f'{Path.home()}\Desktop\Dima Privacy Protection'
+        self.base_folder = f'{Path.home()}\Desktop\Encryption Folder'
 
-        self.encrypt_dir = f'{self.base_folder}\Dima_Encrypt'
+        self.encrypt_dir = f'{self.base_folder}\Encrypt'
 
-        self.decrypt_dir = f'{self.base_folder}\Dima_Decrypt'
+        self.decrypt_dir = f'{self.base_folder}\Decrypt'
 
         Path(self.encrypt_dir).mkdir(parents=True, exist_ok=True)
 
@@ -26,7 +26,7 @@ class Watch:
 
         self.observers = []
 
-        self.log_file = f'{self.base_folder}\Dima.log.log'
+        self.log_file = f'{self.base_folder}\log.log'
 
         logging.basicConfig(
             handlers=[RotatingFileHandler(self.log_file, maxBytes=10000000, backupCount=10)],
@@ -35,6 +35,7 @@ class Watch:
             datefmt='%Y-%m-%d %H:%M:%S')
   
     def run(self):
+        """ Start observer """
 
         try:
             self.observer.schedule(self.event_handler, self.base_folder , recursive = True)
@@ -67,14 +68,16 @@ class Handler(FileSystemEventHandler):
   
     def __init__(self):
 
-        self.encrypt_dir = f'{Path.home()}\Desktop\Dima Privacy Protection\Dima_Encrypt'
-        self.decrypt_dir = f'{Path.home()}\Desktop\Dima Privacy Protection\Dima_Decrypt'
+        self.encrypt_dir = f'{Path.home()}\Desktop\Encryption Folder\Encrypt'
+        self.decrypt_dir = f'{Path.home()}\Desktop\Encryption Folder\Decrypt'
 
-        self.key_ = b'EAvkyCq09USeJ1TUXU1qelcScnKwKJKK9EQn59BuMsM='        
+        self.key_ = b'EAvkyCq09USehiTUXU1qelcScnKwKbye9EQn59BuMsM='        
 
         self.fernet_obj = Fernet(self.key_)
 
     def file_encrypt(self ,original_file_name , encrypt_file_name):
+      
+        """ This function encrypt all files from encrypt directory in desktop """
 
         result = 'complete'
 
@@ -107,6 +110,8 @@ class Handler(FileSystemEventHandler):
             return 'False'
 
     def file_decrypt(self, encrypted_file_name , decrypt_file_name):
+      
+        """ This function decrypt all files from decrypt directory in desktop """
 
         result = 'complete'
 
@@ -139,6 +144,8 @@ class Handler(FileSystemEventHandler):
             return 'False'
     
     def on_created(self, event):
+      
+        """ Event handler when files created , move , delete in """
 
         if event.is_directory:
             return None 
@@ -182,7 +189,7 @@ class Handler(FileSystemEventHandler):
                                 os.remove(encrypted_file_name)
 
                         except Exception as ex:
-                            logging.info(f"Decrypt file exception . The given file is not encrypted by DimaAV  --- >>> {ex}") 
+                            logging.info(f"Decrypt file exception . The given file is not encrypted by this sofware  --- >>> {ex}") 
                     else:
                         pass  
                 else:
